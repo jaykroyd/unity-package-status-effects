@@ -5,7 +5,7 @@ using System.Linq;
 namespace Elysium.Effects.UI
 {
     [System.Serializable]
-    public class VisualEffectPoolView : PoolView<VisualEffect>, IVisualEffectView
+    public class VisualEffectPoolView : PoolSpawner<VisualEffect>, IVisualEffectView
     {
         public new IEnumerable<IVisualEffect> Set(int _numOfSlots)
         {
