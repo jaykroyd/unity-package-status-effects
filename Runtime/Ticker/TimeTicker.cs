@@ -12,7 +12,7 @@ namespace Elysium.Effects
 
         public TimeTicker(TimeSpan _tickInterval)
         {
-            timer = Timer.CreateTimer(_tickInterval);
+            timer = Timer.CreateScaledTimer(_tickInterval);
             timer.OnEnd.AddListener(Tick);
             timer.AutoRestart = true;
             timer.Start();
