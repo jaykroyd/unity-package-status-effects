@@ -1,18 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Elysium.Effects
 {
-    public class EffectReceiver : IEffectReceiver
+    public class EffectReceiver : IEffectReceiver, IDisposable
     {
         private List<IEffectStack> stacks = default;
         private ITicker ticker = default;
 
         public IList<IEffectStack> Stacks => stacks;
 
-        public event UnityAction OnValueChanged = delegate { };
+        public event UnityAction OnValueChanged;
+        public event UnityAction<IEffect, int, int> OnEffectAdded;
+        public event UnityAction<IEffect, int> OnEffectStacksChanged;
+        public event UnityAction<IEffect, int> OnEffectDurationChanged;
+        public event UnityAction<IEffect> OnEffectRemoved;
 
         public EffectReceiver(ITicker _ticker )
         {
@@ -30,33 +35,58 @@ namespace Elysium.Effects
 
         public int Quantity(IEffect _effect)
         {
-            return Stacks.Where(x => x.Contains(_effect)).Sum(x => x.Count);
+            return Stacks.Where(x => x.Contains(_effect)).Sum(x => x.Stacks);
         }
 
         public bool Apply(IEffectApplier _applier, IEffect _effect, int _stacks)
         {
-            // check if effect can be applied
             if (TryGetEffectStack(_effect, out IEffectStack _current))
             {
-                return _current.Apply(_applier, this, _stacks);
+                return HandleExistingStack(_applier, _effect, _stacks, _current);
             }
 
+            return HandleNewStack(_applier, _effect, _stacks);
+        }
+
+        private bool HandleNewStack(IEffectApplier _applier, IEffect _effect, int _stacks)
+        {
             IEffectStack stack = EffectStack.WithEffect(_effect, 0);
-            if (stack.Apply(_applier, this, _stacks))
+            bool applied = stack.Apply(_applier, this, _stacks);
+            if (applied)
             {
                 Stacks.Add(stack);
-                BindStack(stack);
+                BindStack(stack);                
+                OnEffectAdded?.Invoke(_effect, _stacks, _effect.Duration);
                 TriggerOnValueChanged();
-                return true;
             }
-            return false;
+            return applied;
+        }
+
+        private bool HandleExistingStack(IEffectApplier _applier, IEffect _effect, int _stacks, IEffectStack _current)
+        {
+            int prevStacks = _current.Stacks;
+            int prevTicks = _current.TicksRemaining;
+            bool applied = _current.Apply(_applier, this, _stacks);
+            if (applied)
+            {
+                if (prevStacks != _current.Stacks) { OnEffectStacksChanged?.Invoke(_effect, _current.Stacks); }
+                if (prevTicks != _current.TicksRemaining) { OnEffectDurationChanged?.Invoke(_effect, _current.TicksRemaining); }
+            }
+            return applied;
         }
 
         public bool Cleanse(IEffectApplier _remover, IEffect _effect, int _stacks)
         {
             if (TryGetEffectStack(_effect, out IEffectStack _current))
             {
-                return _current.Cleanse(_remover, this, _stacks);
+                int prevStacks = _current.Stacks;
+                int prevTicks = _current.TicksRemaining;
+                if (_current.Cleanse(_remover, this, _stacks))
+                {
+                    if (prevStacks != _current.Stacks) { OnEffectStacksChanged?.Invoke(_effect, _current.Stacks); }
+                    if (prevTicks != _current.TicksRemaining) { OnEffectDurationChanged?.Invoke(_effect, _current.TicksRemaining); }
+                    return true;
+                }
             }
             return false;
         }
@@ -82,7 +112,7 @@ namespace Elysium.Effects
             for (int i = effects.Count(); i-- > 0;)
             {
                 IEffectStack stack = effects.ElementAt(i);
-                stack.Tick(this, stack.Count);
+                stack.Tick(this, stack.Stacks);
             }
 
             for (int i = effects.Count(); i-- > 0;)
@@ -90,7 +120,7 @@ namespace Elysium.Effects
                 IEffectStack stack = effects.ElementAt(i);
                 if (stack.HasEnded) 
                 {
-                    stack.Effect.End(this, stack.Count);
+                    stack.Effect.End(this, stack.Stacks);
                     stack.Empty(); 
                 }
             }
@@ -114,6 +144,7 @@ namespace Elysium.Effects
                 _stack.OnEmpty -= CullStack;
                 _stack.OnValueChanged -= TriggerOnValueChanged;
                 Stacks.Remove(_stack);
+                OnEffectRemoved?.Invoke(_stack.Effect);
                 // TriggerOnValueChanged();
             }
 
@@ -121,7 +152,7 @@ namespace Elysium.Effects
             _stack.OnEmpty += CullStack;
         }
 
-        ~EffectReceiver()
+        public void Dispose()
         {
             foreach (var stack in Stacks)
             {

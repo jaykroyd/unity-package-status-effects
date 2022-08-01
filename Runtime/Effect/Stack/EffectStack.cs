@@ -13,7 +13,7 @@ namespace Elysium.Effects
 
         public Guid ID => id;
         public IEffect Effect => !IsEmpty ? effect : new NullEffect();
-        public int Count => count;
+        public int Stacks => count;
         public bool HasEnded => ticks >= Effect.Duration;
         public bool IsFull => effect != null && count >= Effect.MaxStack;
         public bool IsEmpty => effect is null;
@@ -51,7 +51,7 @@ namespace Elysium.Effects
 
         public bool Apply(IEffectApplier _applier, IEffectReceiver _receiver, int _stacksApplied)
         {
-            int totalStacks = Mathf.Clamp(Count + _stacksApplied, MinValue, MaxValue);
+            int totalStacks = Mathf.Clamp(Stacks + _stacksApplied, MinValue, MaxValue);
             if (Effect.Apply(_applier, _receiver, _stacksApplied, totalStacks))
             {
                 Add(_stacksApplied);
@@ -69,7 +69,7 @@ namespace Elysium.Effects
 
         public bool Cleanse(IEffectApplier _remover, IEffectReceiver _receiver, int _stacksRemoved)
         {
-            if (Effect.Cleanse(_remover, _receiver, _stacksRemoved, _stacksRemoved + Count))
+            if (Effect.Cleanse(_remover, _receiver, _stacksRemoved, _stacksRemoved + Stacks))
             {
                 Remove(_stacksRemoved);
                 return true;

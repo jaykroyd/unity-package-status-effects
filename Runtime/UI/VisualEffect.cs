@@ -27,7 +27,7 @@ namespace Elysium.Effects.UI
             this.stack = _stack;
 
             gameObject.name = $"[{stack.GetType().Name}] {stack}";
-            SetupQuantity(stack.Count);
+            SetupQuantity(stack.Stacks);
             SetupIcon(stack.Effect.Icon);
         }
 

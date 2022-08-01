@@ -7,10 +7,11 @@ namespace Elysium.Effects
     {
         Guid ID { get; }
         IEffect Effect { get; }
-        int Count { get; }
+        int Stacks { get; }
         bool HasEnded { get; }
         bool IsFull { get; }
-        bool IsEmpty { get; }        
+        bool IsEmpty { get; }
+        int TicksRemaining { get; }
 
         event UnityAction OnValueChanged;
         event UnityAction OnFull;

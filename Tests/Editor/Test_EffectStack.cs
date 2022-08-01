@@ -38,12 +38,12 @@ namespace Elysium.Effects.Tests
                 foreach (var number in Enumerable.Range(1, 10).ToList())
                 {
                     onValueChangedTriggers = 0;
-                    int prev = stack.Count;
+                    int prev = stack.Stacks;
                     int expected = Mathf.Clamp(prev + number, 0, effect.MaxStack);
 
                     Assert.IsTrue(stack.Apply(applier, receiver, number));
-                    Assert.AreEqual(expected, stack.Count);
-                    Assert.AreEqual(stack.Count != prev ? 1 : 0, onValueChangedTriggers);
+                    Assert.AreEqual(expected, stack.Stacks);
+                    Assert.AreEqual(stack.Stacks != prev ? 1 : 0, onValueChangedTriggers);
                 }
 
                 stack.OnValueChanged -= TriggerOnValueChanged;
@@ -74,12 +74,12 @@ namespace Elysium.Effects.Tests
                 foreach (var number in Enumerable.Range(1, 10).ToList())
                 {
                     onValueChangedTriggers = 0;
-                    int prev = stack.Count;
+                    int prev = stack.Stacks;
                     stack.Cleanse(applier, receiver, number);
                     int expected = Math.Max(0, prev - number);
-                    Assert.AreEqual(stack.Count, expected);
+                    Assert.AreEqual(stack.Stacks, expected);
 
-                    if (prev != stack.Count)
+                    if (prev != stack.Stacks)
                     {
                         Assert.AreEqual(1, onValueChangedTriggers);
                     }
@@ -106,12 +106,12 @@ namespace Elysium.Effects.Tests
 
                 Assert.False(stack.IsEmpty);
                 Assert.AreNotEqual(new NullEffect(), stack.Effect);
-                Assert.AreNotEqual(0, stack.Count);
+                Assert.AreNotEqual(0, stack.Stacks);
 
                 stack.Empty();
                 Assert.True(stack.IsEmpty);
                 Assert.AreEqual(new NullEffect(), stack.Effect);
-                Assert.AreEqual(0, stack.Count);
+                Assert.AreEqual(0, stack.Stacks);
 
                 Assert.AreEqual(1, onValueChangedTriggers);
                 stack.OnValueChanged -= TriggerOnValueChanged;
