@@ -5,7 +5,7 @@ namespace Elysium.Effects
 {
     public interface IEffectReceiver
     {
-        IList<IEffectStack> Stacks { get; }
+        IList<IEffectStack> Stacks { get; }        
 
         event UnityAction OnValueChanged;
 
@@ -15,5 +15,10 @@ namespace Elysium.Effects
         void CleanseAll(IEffectApplier _applier);
         bool Contains(IEffect _effect);
         int Quantity(IEffect _effect);
+    }
+
+    public interface IEffectReceiver<T> : IEffectReceiver
+    {
+        T Affected { get; }
     }
 }

@@ -24,7 +24,7 @@ namespace Elysium.Effects.Tests
 
             var effectReceivers = new IEffectReceiver[]
             {
-                new EffectReceiver(new NullTicker()),
+                new EffectReceiver<string>(new NullTicker(), "test"),
             };
 
             foreach (var effectReceiver in effectReceivers)
@@ -53,7 +53,7 @@ namespace Elysium.Effects.Tests
 
             var effectReceivers = new IEffectReceiver[]
             {
-                new EffectReceiver(new NullTicker()),
+                new EffectReceiver<string>(new NullTicker(), "test"),
             };
 
             foreach (var effectReceiver in effectReceivers)
@@ -94,7 +94,7 @@ namespace Elysium.Effects.Tests
 
             var effectReceivers = new IEffectReceiver[]
             {
-                new EffectReceiver(new NullTicker()),
+                new EffectReceiver<string>(new NullTicker(), "test"),
             };
 
             foreach (var effectReceiver in effectReceivers)
@@ -119,7 +119,7 @@ namespace Elysium.Effects.Tests
 
             var effectReceivers = new IEffectReceiver[]
             {
-                new EffectReceiver(new NullTicker()),
+                new EffectReceiver<string>(new NullTicker(), "test"),
             };
 
             foreach (var effectReceiver in effectReceivers)
@@ -150,7 +150,7 @@ namespace Elysium.Effects.Tests
 
             var effectReceivers = new IEffectReceiver[]
             {
-                new EffectReceiver(new NullTicker()),
+                new EffectReceiver<string>(new NullTicker(), "test"),
             };
 
             foreach (var effectReceiver in effectReceivers)
@@ -184,7 +184,7 @@ namespace Elysium.Effects.Tests
 
             var effectReceivers = new IEffectReceiver[]
             {
-                new EffectReceiver(ticker),
+                new EffectReceiver<string>(ticker, "test"),
             };
 
             foreach (var effectReceiver in effectReceivers)
@@ -219,7 +219,7 @@ namespace Elysium.Effects.Tests
 
             var effectReceivers = new IEffectReceiver[]
             {
-                new EffectReceiver(ticker),
+                new EffectReceiver<string>(ticker, "test"),
             };
 
             foreach (var effectReceiver in effectReceivers)
@@ -249,7 +249,7 @@ namespace Elysium.Effects.Tests
 
             var effectReceivers = new IEffectReceiver[]
             {
-                new EffectReceiver(ticker),
+                new EffectReceiver<string>(ticker, "test"),
             };
 
             foreach (var effectReceiver in effectReceivers)
@@ -280,7 +280,7 @@ namespace Elysium.Effects.Tests
 
             var effectReceivers = new IEffectReceiver[]
             {
-                new EffectReceiver(ticker),
+                new EffectReceiver<string>(ticker, "test"),
             };
 
             foreach (var effectReceiver in effectReceivers)

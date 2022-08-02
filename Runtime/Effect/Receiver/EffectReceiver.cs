@@ -6,12 +6,14 @@ using UnityEngine.Events;
 
 namespace Elysium.Effects
 {
-    public class EffectReceiver : IEffectReceiver, IDisposable
+    public class EffectReceiver<T> : IEffectReceiver<T>, IDisposable
     {
         private List<IEffectStack> stacks = default;
         private ITicker ticker = default;
+        private T affected = default;
 
         public IList<IEffectStack> Stacks => stacks;
+        public T Affected => affected;
 
         public event UnityAction OnValueChanged;
         public event UnityAction<IEffect, int, int> OnEffectAdded;
@@ -19,8 +21,9 @@ namespace Elysium.Effects
         public event UnityAction<IEffect, int> OnEffectDurationChanged;
         public event UnityAction<IEffect> OnEffectRemoved;
 
-        public EffectReceiver(ITicker _ticker )
+        public EffectReceiver(ITicker _ticker, T _affected)
         {
+            this.affected = _affected;
             stacks = new List<IEffectStack>();
             stacks.ForEach(x => BindStack(x));
 
