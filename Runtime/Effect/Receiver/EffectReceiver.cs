@@ -115,7 +115,11 @@ namespace Elysium.Effects
             for (int i = effects.Count(); i-- > 0;)
             {
                 IEffectStack stack = effects.ElementAt(i);
+                int prevStacks = stack.Stacks;
+                int prevTicks = stack.TicksRemaining;
                 stack.Tick(this, stack.Stacks);
+                if (!stack.HasEnded && prevStacks != stack.Stacks) { OnEffectStacksChanged?.Invoke(stack.Effect, stack.Stacks); }
+                if (!stack.HasEnded && prevTicks != stack.TicksRemaining) { OnEffectDurationChanged?.Invoke(stack.Effect, stack.TicksRemaining); }
             }
 
             for (int i = effects.Count(); i-- > 0;)
@@ -124,7 +128,9 @@ namespace Elysium.Effects
                 if (stack.HasEnded) 
                 {
                     stack.Effect.End(this, stack.Stacks);
-                    stack.Empty(); 
+                    var effect = stack.Effect;
+                    stack.Empty();
+                    OnEffectRemoved?.Invoke(effect);
                 }
             }
         }
@@ -146,8 +152,7 @@ namespace Elysium.Effects
             {
                 _stack.OnEmpty -= CullStack;
                 _stack.OnValueChanged -= TriggerOnValueChanged;
-                Stacks.Remove(_stack);
-                OnEffectRemoved?.Invoke(_stack.Effect);
+                Stacks.Remove(_stack);                
                 // TriggerOnValueChanged();
             }
 
