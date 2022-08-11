@@ -51,14 +51,20 @@ namespace Elysium.Effects
 
         public bool Apply(IEffectApplier _applier, IEffectReceiver _receiver, int _stacksApplied)
         {
-            int totalStacks = Mathf.Clamp(Stacks + _stacksApplied, MinValue, MaxValue);
-            if (Effect.Apply(_applier, _receiver, _stacksApplied, totalStacks))
+            int beforeStacks = Stacks;
+            int afterStacks = Mathf.Clamp(Stacks + _stacksApplied, MinValue, MaxValue);
+
+            bool applied = Stacks == 0
+                ? Effect.ApplyFirst(_applier, _receiver, afterStacks - beforeStacks) 
+                : Effect.ApplyRefresh(_applier, _receiver, beforeStacks, afterStacks - beforeStacks, afterStacks);
+
+            if (applied)
             {
                 Add(_stacksApplied);
                 if (Effect.RefreshOnApply) { ticks = 0; }
-                return true;
             }
-            return false;
+
+            return applied;
         }
 
         public void Tick(IEffectReceiver _receiver, int _stacks)
@@ -69,13 +75,12 @@ namespace Elysium.Effects
 
         public bool Cleanse(IEffectApplier _remover, IEffectReceiver _receiver, int _stacksRemoved)
         {
-            if (Effect.Cleanse(_remover, _receiver, _stacksRemoved, _stacksRemoved + Stacks))
-            {
-                Remove(_stacksRemoved);
-                return true;
-            }
-            return false;
-        }        
+            int beforeStacks = Stacks;
+            int afterStacks = Mathf.Clamp(Stacks - _stacksRemoved, MinValue, MaxValue);
+            bool removed = Effect.Cleanse(_remover, _receiver, beforeStacks, beforeStacks - afterStacks, afterStacks);
+            if (removed) { Remove(_stacksRemoved); }
+            return removed;
+        }
 
         public void Empty()
         {

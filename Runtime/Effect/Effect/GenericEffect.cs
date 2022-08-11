@@ -31,15 +31,21 @@ namespace Elysium.Effects
 
         }
 
-        public bool Apply(IEffectApplier _applier, IEffectReceiver _receiver, int _stacksApplied, int _totalStacks)
+        public bool ApplyFirst(IEffectApplier _applier, IEffectReceiver _receiver, int _stacks)
         {
-            OnApply?.Invoke(_applier, _receiver, _stacksApplied, _totalStacks);
+            OnApply?.Invoke(_applier, _receiver, _stacks, _stacks);
             return true;
         }
 
-        public bool Cleanse(IEffectApplier _remover, IEffectReceiver _receiver, int _stacksRemoved, int _totalStacks)
+        public bool ApplyRefresh(IEffectApplier _applier, IEffectReceiver _receiver, int _totalStacksBefore, int _stacksApplied, int _totalStacksAfter)
         {
-            if (CanCleanse) { OnCleanse?.Invoke(_remover, _receiver, _stacksRemoved, _totalStacks); }
+            OnApply?.Invoke(_applier, _receiver, _stacksApplied, _totalStacksAfter);
+            return true;
+        }
+
+        public bool Cleanse(IEffectApplier _remover, IEffectReceiver _receiver, int _totalStacksBefore, int _stacksRemoved, int _totalStacksAfter)
+        {
+            if (CanCleanse) { OnCleanse?.Invoke(_remover, _receiver, _stacksRemoved, _totalStacksAfter); }
             return CanCleanse;
         }
 

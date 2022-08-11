@@ -18,9 +18,10 @@ namespace Elysium.Effects
         int Duration { get; }
         bool RefreshOnApply { get; }
 
-        bool Apply(IEffectApplier _applier, IEffectReceiver _receiver, int _stacksApplied, int _totalStacks);
+        bool ApplyFirst(IEffectApplier _applier, IEffectReceiver _receiver, int _stacks);
+        bool ApplyRefresh(IEffectApplier _applier, IEffectReceiver _receiver, int _totalStacksBefore, int _stacksApplied, int _totalStacksAfter);
         void Tick(IEffectReceiver _receiver, int _stacks);
         void End(IEffectReceiver _receiver, int _stacks);
-        bool Cleanse(IEffectApplier _remover, IEffectReceiver _receiver, int _stacksRemoved, int _totalStacks);
+        bool Cleanse(IEffectApplier _remover, IEffectReceiver _receiver, int _totalStacksBefore, int _stacksRemoved, int _totalStacksAfter);
     }
 }

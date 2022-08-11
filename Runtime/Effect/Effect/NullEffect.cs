@@ -22,12 +22,17 @@ namespace Elysium.Effects
 
         }
 
-        public bool Apply(IEffectApplier _applier, IEffectReceiver _receiver, int _stacksApplied, int _totalStacks)
+        public bool ApplyFirst(IEffectApplier _applier, IEffectReceiver _receiver, int _stacks)
         {
             return false;
         }
 
-        public bool Cleanse(IEffectApplier _remover, IEffectReceiver _receiver, int _stacksRemoved, int _totalStacks)
+        public bool ApplyRefresh(IEffectApplier _applier, IEffectReceiver _receiver, int _totalStacksBefore, int _stacksApplied, int _totalStacksAfter)
+        {
+            return false;
+        }
+
+        public bool Cleanse(IEffectApplier _remover, IEffectReceiver _receiver, int _totalStacksBefore, int _stacksRemoved, int _totalStacksAfter)
         {
             return false;
         }
@@ -50,6 +55,6 @@ namespace Elysium.Effects
         public override int GetHashCode()
         {
             return GetType().GetHashCode();
-        }
+        }        
     }
 }
