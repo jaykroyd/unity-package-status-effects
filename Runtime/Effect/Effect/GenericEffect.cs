@@ -14,12 +14,13 @@ namespace Elysium.Effects
         public Sprite Icon { get; set; } = null;
         public int Duration { get; set; } = 10;
         public int Priority { get; set; } = 0;
+        public int Level { get; set; } = 0;
         public int MaxStack { get; set; } = 10;
         public int MaxVisualStack => MaxStack;
         public bool IsBeneficial { get; set; } = false;
         public bool PersistsOnDeath { get; set; } = false;
         public bool CanCleanse { get; set; } = true;
-        public bool RefreshOnApply { get; set; } = true;
+        public bool RefreshOnApply { get; set; } = true;        
 
         public UnityEvent<IEffectApplier, IEffectReceiver, int, int> OnApply = new UnityEvent<IEffectApplier, IEffectReceiver, int, int>();
         public UnityEvent<IEffectApplier, IEffectReceiver, int, int> OnCleanse = new UnityEvent<IEffectApplier, IEffectReceiver, int, int>();
@@ -49,9 +50,14 @@ namespace Elysium.Effects
             return CanCleanse;
         }
 
-        public void End(IEffectReceiver _receiver, int _totalStacks)
+        public void EndExpire(IEffectReceiver _receiver, int _totalStacks)
         {
             OnEnd?.Invoke(_receiver, _totalStacks);
+        }
+
+        public void EndReplace(IEffectApplier _applier, IEffectReceiver _receiver, IEffect _new, int _totalStacksBefore, int _stacksApplied, int _totalStacksAfter)
+        {
+
         }
 
         public void Tick(IEffectReceiver _receiver, int _stacks)
@@ -69,6 +75,6 @@ namespace Elysium.Effects
         public override int GetHashCode()
         {
             return InstanceID.GetHashCode();
-        }
+        }        
     }
 }

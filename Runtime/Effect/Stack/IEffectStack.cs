@@ -18,7 +18,7 @@ namespace Elysium.Effects
         event UnityAction OnEmpty;
 
         bool Contains(IEffect _effect);
-        bool Apply(IEffectApplier _applier, IEffectReceiver _receiver, int _stacksApplied);
+        bool Apply(IEffectApplier _applier, IEffectReceiver _receiver, IEffect _effect, int _stacksApplied);
         void Tick(IEffectReceiver _receiver, int _stacks);        
         bool Cleanse(IEffectApplier _remover, IEffectReceiver _receiver, int _stacksRemoved);
         void Empty();        

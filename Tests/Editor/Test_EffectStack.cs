@@ -41,7 +41,7 @@ namespace Elysium.Effects.Tests
                     int prev = stack.Stacks;
                     int expected = Mathf.Clamp(prev + number, 0, effect.MaxStack);
 
-                    Assert.IsTrue(stack.Apply(applier, receiver, number));
+                    Assert.IsTrue(stack.Apply(applier, receiver, effect, number));
                     Assert.AreEqual(expected, stack.Stacks);
                     Assert.AreEqual(stack.Stacks != prev ? 1 : 0, onValueChangedTriggers);
                 }

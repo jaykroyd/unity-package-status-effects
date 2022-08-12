@@ -54,7 +54,7 @@ namespace Elysium.Effects
         private bool HandleNewStack(IEffectApplier _applier, IEffect _effect, int _stacks)
         {
             IEffectStack stack = EffectStack.WithEffect(_effect, 0);
-            bool applied = stack.Apply(_applier, this, _stacks);
+            bool applied = stack.Apply(_applier, this, _effect, _stacks);
             if (applied)
             {
                 Stacks.Add(stack);
@@ -69,7 +69,7 @@ namespace Elysium.Effects
         {
             int prevStacks = _current.Stacks;
             int prevTicks = _current.TicksRemaining;
-            bool applied = _current.Apply(_applier, this, _stacks);
+            bool applied = _current.Apply(_applier, this, _effect, _stacks);
             if (applied)
             {
                 if (prevStacks != _current.Stacks) { OnEffectStacksChanged?.Invoke(_effect, _current.Stacks); }
@@ -127,7 +127,7 @@ namespace Elysium.Effects
                 IEffectStack stack = effects.ElementAt(i);
                 if (stack.HasEnded) 
                 {
-                    stack.Effect.End(this, stack.Stacks);
+                    stack.Effect.EndExpire(this, stack.Stacks);
                     var effect = stack.Effect;
                     stack.Empty();
                     OnEffectRemoved?.Invoke(effect);

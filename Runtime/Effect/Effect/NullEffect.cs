@@ -11,6 +11,7 @@ namespace Elysium.Effects
         public Sprite Icon { get; set; } = Resources.Load<Sprite>("empty");
         public int Duration { get; set; } = 0;
         public int Priority { get; set; } = 0;
+        public int Level { get; set; } = 0;
         public int MaxStack { get; set; } = 0;
         public int MaxVisualStack => MaxStack;
         public bool IsBeneficial { get; set; } = false;
@@ -37,7 +38,12 @@ namespace Elysium.Effects
             return false;
         }
 
-        public void End(IEffectReceiver _receiver, int _stacks)
+        public void EndExpire(IEffectReceiver _receiver, int _stacks)
+        {
+            
+        }
+
+        public void EndReplace(IEffectApplier _applier, IEffectReceiver _receiver, IEffect _new, int _totalStacksBefore, int _stacksApplied, int _totalStacksAfter)
         {
             
         }

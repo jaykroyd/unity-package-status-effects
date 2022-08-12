@@ -49,17 +49,23 @@ namespace Elysium.Effects
             return Effect.Equals(_effect);
         }
 
-        public bool Apply(IEffectApplier _applier, IEffectReceiver _receiver, int _stacksApplied)
+        public bool Apply(IEffectApplier _applier, IEffectReceiver _receiver, IEffect _effect, int _stacksApplied)
         {
             int beforeStacks = Stacks;
             int afterStacks = Mathf.Clamp(Stacks + _stacksApplied, MinValue, MaxValue);
+
+            if (effect.Level < _effect.Level) 
+            {
+                Effect.EndReplace(_applier, _receiver, _effect, beforeStacks, afterStacks - beforeStacks, afterStacks);
+                Set(_effect);
+            }
 
             bool applied = Stacks == 0
                 ? Effect.ApplyFirst(_applier, _receiver, afterStacks - beforeStacks) 
                 : Effect.ApplyRefresh(_applier, _receiver, beforeStacks, afterStacks - beforeStacks, afterStacks);
 
             if (applied)
-            {
+            {                
                 Add(_stacksApplied);
                 if (Effect.RefreshOnApply) { ticks = 0; }
             }
